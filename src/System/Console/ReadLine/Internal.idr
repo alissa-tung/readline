@@ -69,6 +69,14 @@ Prim__ic_completion_envPtr = Struct "ic_completion_env_t"
   , ("closure" , VoidPtr)
   , ("complete", Ptr Prim__ic_completion_fun) ]
 
+||| ic_completion_env_t *mk_ic_completion_env()
+%foreign rlLib "mk_ic_completion_env"
+prim__mk_ic_completion_env : PrimIO Prim__ic_completion_envPtr
+
+||| void rm_ic_completion_env(ic_completion_env_t *ic_completion_env)
+%foreign rlLib "rm_ic_completion_env"
+prim__rm_ic_completion_env : Prim__ic_completion_envPtr -> PrimIO ()
+
 ||| struct ic_highlight_env_s
 |||   attrbuf_t*    attrs
 |||   const char*   input
@@ -77,8 +85,8 @@ Prim__ic_completion_envPtr = Struct "ic_completion_env_t"
 |||   alloc_t*      mem
 |||   ssize_t       cached_upos
 |||   ssize_t       cached_cpos
-Prim__ic_highlight_env : Type
-Prim__ic_highlight_env = Struct "ic_highlight_env_t"
+Prim__ic_highlight_envPtr : Type
+Prim__ic_highlight_envPtr = Struct "ic_highlight_env_t"
   [ ("attrs"      , Prim__attrbufPtr)
   , ("input"      , Ptr String)
   , ("input_len"  , Bits32)
@@ -90,15 +98,12 @@ Prim__ic_highlight_env = Struct "ic_highlight_env_t"
 ||| typedef void (ic_completer_fun_t)
 |||   (ic_completion_env_t* cenv, const char* prefix)
 Prim__ic_completer_fun : Type
-Prim__ic_completer_fun = Prim__ic_completion_envPtr -> String
+Prim__ic_completer_fun = Prim__ic_completion_envPtr -> String -> PrimIO ()
 
-||| ic_completion_env_t *mk_ic_completion_env()
-%foreign rlLib "mk_ic_completion_env"
-prim__mk_ic_completion_env : PrimIO Prim__ic_completion_envPtr
-
-||| void rm_ic_completion_env(ic_completion_env_t *ic_completion_env)
-%foreign rlLib "rm_ic_completion_env"
-prim__rm_ic_completion_env : Prim__ic_completion_envPtr -> PrimIO ()
+||| typedef void (ic_highlight_fun_t)
+|||   (ic_highlight_env_t* henv, const char* input, void* arg)
+Prim__ic_highlight_fun : Type
+Prim__ic_highlight_fun = Prim__ic_highlight_envPtr -> String -> VoidPtr -> PrimIO ()
 
 --------------------------------------------------------------------------------
 
@@ -106,6 +111,16 @@ prim__rm_ic_completion_env : Prim__ic_completion_envPtr -> PrimIO ()
 export
 %foreign rlLib "ic_readline"
 prim__ic_readline : String -> PrimIO String
+
+||| char* ic_readline_ex(const char* prompt_text,
+|||   ic_completer_fun_t* completer, void* completer_arg,
+|||   ic_highlight_fun_t* highlighter, void* highlighter_arg)
+export
+%foreign rlLib "ic_readline_ex"
+prim__ic_readline_ex : String
+                    -> Ptr Prim__ic_completer_fun -> VoidPtr
+                    -> Ptr Prim__ic_highlight_fun -> VoidPtr
+                    -> PrimIO String
 
 --------------------------------------------------------------------------------
 

@@ -8,7 +8,7 @@ on:
       - main
 
 env:
-  IDRIS2_COMMIT: abd055252605d9c43e53e4ccd1a9f74d75c88569
+  IDRIS2_COMMIT: 031508a7908bf03f9089cda7749608b3a1c5f4e3
   SCHEME: scheme
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
           sudo apt-get install -y chezscheme
 
       - name: Install Idris2
-        if: steps.cache-idris2.outputs.cache-hit != 'true'
+        # if: steps.cache-idris2.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/idris-lang/idris2
           cd idris2
@@ -44,6 +44,9 @@ jobs:
           make bootstrap && make install
           git checkout main
           make clean && make all && make install
+          echo "$HOME/.idris2/bin" >> $GITHUB_PATH
+          $HOME/.idris2/bin/idris2 --version
+          idris2 --version
 
       - name: Checkout readline
         uses: actions/checkout@v2
