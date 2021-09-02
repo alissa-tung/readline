@@ -8,9 +8,38 @@ import System.Console.ReadLine.Internal
 
 --------------------------------------------------------------------------------
 
+public export
+FmtString : Type
+FmtString = String
+
+export
+record CompletionEnv where
+  constructor MkCompletionEnv
+  unCompletionEnv : Prim__ic_completion_envPtr
+
+public export
+CompleterFun : Type
+CompleterFun = CompletionEnv -> String -> IO ()
+
+--------------------------------------------------------------------------------
+
 export
 readline : String -> IO String
 readline = primIO . prim__ic_readline
+
+export
+readlineEx : String
+          -> Maybe (CompletionEnv -> String -> IO ())
+          -> Maybe (String -> FmtString)
+          -> IO String
+readlineEx prompt completer highlighter = do
+  primIO $ prim__ic_readline_ex prompt
+    (case completer of
+      Just completer => ?todo0
+      Nothing        => believe_me prim__null_ptr)
+    (believe_me prim__null_ptr)
+    ?arg2
+    (believe_me prim__null_ptr)
 
 --------------------------------------------------------------------------------
 
@@ -33,11 +62,6 @@ historyAdd : String -> IO ()
 historyAdd = primIO . prim__ic_history_add
 
 --------------------------------------------------------------------------------
-
-export
-record CompletionEnv where
-  constructor MkCompletionEnv
-  unCompletionEnv : Prim__ic_completion_envPtr
 
 export
 completeFileName : CompletionEnv -> String

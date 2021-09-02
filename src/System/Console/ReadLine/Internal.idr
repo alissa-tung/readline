@@ -7,7 +7,7 @@ import public System.FFI
 --------------------------------------------------------------------------------
 
 rlLib : String -> String
-rlLib f = "C:" ++ f ++ ", /usr/local/lib/libisocline.so"
+rlLib f = "C:" ++ f ++ ", /usr/local/lib/libisoclineidr.so"
 
 --------------------------------------------------------------------------------
 
@@ -16,6 +16,10 @@ VoidPtr = AnyPtr
 
 CBool : Type
 CBool = Bits32
+
+export
+%foreign rlLib "null_ptr"
+prim__null_ptr : AnyPtr
 
 ||| bool is_null_ptr(void *p)
 %foreign rlLib "is_null_ptr"
@@ -85,6 +89,7 @@ prim__rm_ic_completion_env : Prim__ic_completion_envPtr -> PrimIO ()
 |||   alloc_t*      mem
 |||   ssize_t       cached_upos
 |||   ssize_t       cached_cpos
+||| typedef struct ic_highlight_env_s ic_highlight_env_t
 Prim__ic_highlight_envPtr : Type
 Prim__ic_highlight_envPtr = Struct "ic_highlight_env_t"
   [ ("attrs"      , Prim__attrbufPtr)
