@@ -1,6 +1,6 @@
 module System.Console.ReadLine.Internal
 
-import System.FFI
+import public System.FFI
 
 %default total
 
@@ -34,6 +34,15 @@ prim__string_to_ptr_string : String -> PrimIO (Ptr String)
 Prim__ic_envPtr : Type
 Prim__ic_envPtr = AnyPtr
 
+Prim__attrbufPtr : Type
+Prim__attrbufPtr = AnyPtr
+
+Prim__bbcodePtr : Type
+Prim__bbcodePtr = AnyPtr
+
+Prim__allocPtr : Type
+Prim__allocPtr = AnyPtr
+
 ||| typedef bool (ic_completion_fun_t)
 |||   (ic_env_t* env, void* funenv, const char* replacement, const char* display, const char* help, long delete_before, long delete_after)
 Prim__ic_completion_fun : Type
@@ -50,6 +59,7 @@ Prim__ic_completion_fun = Prim__ic_envPtr -> VoidPtr
 |||   void*                closure
 |||   ic_completion_fun_t* complete
 ||| typedef struct ic_completion_env_s ic_completion_env_t
+public export
 Prim__ic_completion_envPtr : Type
 Prim__ic_completion_envPtr = Struct "ic_completion_env_t"
   [ ("env"     , Prim__ic_envPtr)
@@ -58,6 +68,29 @@ Prim__ic_completion_envPtr = Struct "ic_completion_env_t"
   , ("arg"     , VoidPtr)
   , ("closure" , VoidPtr)
   , ("complete", Ptr Prim__ic_completion_fun) ]
+
+||| struct ic_highlight_env_s
+|||   attrbuf_t*    attrs
+|||   const char*   input
+|||   ssize_t       input_len
+|||   bbcode_t*     bbcode
+|||   alloc_t*      mem
+|||   ssize_t       cached_upos
+|||   ssize_t       cached_cpos
+Prim__ic_highlight_env : Type
+Prim__ic_highlight_env = Struct "ic_highlight_env_t"
+  [ ("attrs"      , Prim__attrbufPtr)
+  , ("input"      , Ptr String)
+  , ("input_len"  , Bits32)
+  , ("bbcode"     , Prim__bbcodePtr)
+  , ("mem"        , Prim__allocPtr)
+  , ("cached_upos", Bits32)
+  , ("cached_cpos", Bits32) ]
+
+||| typedef void (ic_completer_fun_t)
+|||   (ic_completion_env_t* cenv, const char* prefix)
+Prim__ic_completer_fun : Type
+Prim__ic_completer_fun = Prim__ic_completion_envPtr -> String
 
 ||| ic_completion_env_t *mk_ic_completion_env()
 %foreign rlLib "mk_ic_completion_env"
@@ -95,3 +128,13 @@ prim__ic_history_clear : PrimIO ()
 export
 %foreign rlLib "ic_history_add"
 prim__ic_history_add : String -> PrimIO ()
+
+--------------------------------------------------------------------------------
+
+||| void ic_complete_filename(ic_completion_env_t* cenv, const char* prefix,
+|||   char dir_separator, const char* roots, const char* extensions)
+export
+%foreign rlLib "ic_complete_filename"
+prim__ic_complete_filename : Prim__ic_completion_envPtr -> String
+                          -> Char -> String -> String
+                          -> PrimIO ()

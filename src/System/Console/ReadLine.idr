@@ -1,5 +1,6 @@
 module System.Console.ReadLine
 
+import Data.List
 import Data.Maybe
 import System.Console.ReadLine.Internal
 
@@ -30,3 +31,20 @@ historyRemoveLast = primIO prim__ic_history_remove_last
 export
 historyAdd : String -> IO ()
 historyAdd = primIO . prim__ic_history_add
+
+--------------------------------------------------------------------------------
+
+export
+record CompletionEnv where
+  constructor MkCompletionEnv
+  unCompletionEnv : Prim__ic_completion_envPtr
+
+export
+completeFileName : CompletionEnv -> String
+                -> Maybe Char -> List String -> List String
+                -> IO ()
+completeFileName (MkCompletionEnv cEnv) input dirSep filePaths exts = primIO $
+  prim__ic_complete_filename cEnv input
+    (fromMaybe '\NUL' dirSep)
+    (concat (intersperse ";" filePaths))
+    (concat (intersperse ";" exts))
