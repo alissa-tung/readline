@@ -1,0 +1,10 @@
+package rltest
+
+main = Main
+
+executable = runtests
+
+depends =
+    contrib
+  , test
+  , readline

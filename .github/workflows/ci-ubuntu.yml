@@ -1,0 +1,68 @@
+name: Ubuntu
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  IDRIS2_COMMIT: abd055252605d9c43e53e4ccd1a9f74d75c88569
+  SCHEME: scheme
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialise variables
+        run: |
+          if [[ '${{ github.ref }}' == 'refs/heads/main' ]]; then
+             echo "READLINE_DEPLOY=true" >> $GITHUB_ENV
+          fi
+          echo "$HOME/.idris2/bin" >> $GITHUB_PATH
+
+      - name: Cache Idris2
+        uses: actions/cache@v2
+        id: cache-idris2
+        with:
+          path: |
+            ~/.idris2
+          key: ${{ runner.os }}-${{ env.IDRIS2_COMMIT }}
+
+      - name: Install Chez
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chezscheme
+
+      - name: Install Idris2
+        if: steps.cache-idris2.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/idris-lang/idris2
+          cd idris2
+          git checkout ${{ env.IDRIS2_COMMIT }}
+          make bootstrap && make install
+
+      - name: Get Submods
+        run: |
+          git submodule update --init --recursive
+
+      - name: Checkout readline
+        uses: actions/checkout@v2
+
+      - name: Build package
+        run: make all
+
+      - name: Run tests
+        run: make test
+
+      - name: Build HTML doc
+        run: make doc
+
+      - name: Deploy HTML
+        uses: JamesIves/github-pages-deploy-action@4.1.3
+        if: ${{ success() && env.COLLIE_DEPLOY }}
+
+        with:
+          branch: gh-pages
+          folder: build/docs/

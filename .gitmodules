@@ -1,0 +1,4 @@
+
+[submodule "depends/isocline"]
+	path = depends/isocline
+	url  = https://github.com/withoutK/isocline.git

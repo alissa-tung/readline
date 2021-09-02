@@ -1,0 +1,9 @@
+
+*.ttc
+*.ttm
+build
+depends/*
+libisocline.so
+rltest/failures
+rltest/**/build
+rltest/**/output*
