@@ -42,13 +42,13 @@ jobs:
           cd idris2
           git checkout ${{ env.IDRIS2_COMMIT }}
           make bootstrap && make install
-
-      - name: Get Submods
-        run: |
-          git submodule update --init --recursive
+          git checkout main
+          make clean && make all && make install
 
       - name: Checkout readline
         uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
 
       - name: Build package
         run: make all

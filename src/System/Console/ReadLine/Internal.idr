@@ -38,9 +38,9 @@ Prim__ic_envPtr = AnyPtr
 |||   (ic_env_t* env, void* funenv, const char* replacement, const char* display, const char* help, long delete_before, long delete_after)
 Prim__ic_completion_fun : Type
 Prim__ic_completion_fun = Prim__ic_envPtr -> VoidPtr
-                 -> String -> String -> String
-                 -> Bits32 -> Bits32
-                 -> IO CBool
+                       -> String -> String -> String
+                       -> Bits32 -> Bits32
+                       -> IO CBool
 
 ||| struct ic_completion_env_s
 |||   ic_env_t*            env
@@ -73,3 +73,25 @@ prim__rm_ic_completion_env : Prim__ic_completion_envPtr -> PrimIO ()
 export
 %foreign rlLib "ic_readline"
 prim__ic_readline : String -> PrimIO String
+
+--------------------------------------------------------------------------------
+
+||| void ic_set_history(const char* fname, long max_entries)
+export
+%foreign rlLib "ic_set_history"
+prim__ic_set_history : String -> Bits32 -> PrimIO ()
+
+||| void ic_history_remove_last()
+export
+%foreign rlLib "ic_history_remove_last"
+prim__ic_history_remove_last : PrimIO ()
+
+||| void ic_history_clear()
+export
+%foreign rlLib "ic_history_clear"
+prim__ic_history_clear : PrimIO ()
+
+||| void ic_history_add(const char* entry)
+export
+%foreign rlLib "ic_history_add"
+prim__ic_history_add : String -> PrimIO ()
