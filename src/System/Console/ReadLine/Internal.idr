@@ -10,14 +10,35 @@ import public System.FFI
 VoidPtr : Type
 VoidPtr = AnyPtr
 
+public export
 CBool : Type
 CBool = Bits32
+
+export
+Cast CBool Bool where
+  cast = (/= 0)
+
+export
+Cast Bool CBool where
+  cast False = 0
+  cast True  = 1
 
 export
 %foreign rlLib "null_ptr"
 prim__null_ptr : AnyPtr
 
+namespace Void
+  export
+  coeNullPtr : VoidPtr
+  coeNullPtr = believe_me prim__null_ptr
+
+namespace Ptr
+  export
+  coeNullPtr : Ptr a
+  coeNullPtr = believe_me prim__null_ptr
+
 ||| bool is_null_ptr(void *p)
+export
 %foreign rlLib "is_null_ptr"
 prim__is_null_ptr : AnyPtr -> CBool
 
@@ -70,10 +91,12 @@ Prim__ic_completion_envPtr = Struct "ic_completion_env_t"
   , ("complete", Ptr Prim__ic_completion_fun) ]
 
 ||| ic_completion_env_t *mk_ic_completion_env()
+export
 %foreign rlLib "mk_ic_completion_env"
 prim__mk_ic_completion_env : PrimIO Prim__ic_completion_envPtr
 
 ||| void rm_ic_completion_env(ic_completion_env_t *ic_completion_env)
+export
 %foreign rlLib "rm_ic_completion_env"
 prim__rm_ic_completion_env : Prim__ic_completion_envPtr -> PrimIO ()
 
@@ -96,8 +119,17 @@ Prim__ic_highlight_envPtr = Struct "ic_highlight_env_t"
   , ("cached_upos", Bits32)
   , ("cached_cpos", Bits32) ]
 
+||| ic_highlight_env_t *mk_ic_highlight_env()
+%foreign rlLib "mk_ic_highlight_env"
+prim__mk_ic_highlight_env : PrimIO Prim__ic_highlight_envPtr
+
+||| void rm_ic_highlight_env(ic_highlight_env_t *ic_highlight_env)
+%foreign rlLib "rm_ic_highlight_env"
+prim__rm_ic_highlight_env : Prim__ic_highlight_envPtr -> PrimIO ()
+
 ||| typedef void (ic_completer_fun_t)
 |||   (ic_completion_env_t* cenv, const char* prefix)
+public export
 Prim__ic_completer_fun : Type
 Prim__ic_completer_fun = Prim__ic_completion_envPtr -> String -> PrimIO ()
 
@@ -119,9 +151,37 @@ prim__ic_readline : String -> PrimIO String
 export
 %foreign rlLib "ic_readline_ex"
 prim__ic_readline_ex : String
-                    -> Ptr Prim__ic_completer_fun -> VoidPtr
-                    -> Ptr Prim__ic_highlight_fun -> VoidPtr
+                    -> Prim__ic_completer_fun -> VoidPtr
+                    -> Prim__ic_highlight_fun -> VoidPtr
                     -> PrimIO String
+
+export
+%foreign rlLib "idr_ic_readline_ex_00"
+prim__idr_ic_readline_ex_00 : String
+                           -> VoidPtr
+                           -> VoidPtr
+                           -> PrimIO String
+
+export
+%foreign rlLib "idr_ic_readline_ex_01"
+prim__idr_ic_readline_ex_01 : String
+                           -> VoidPtr
+                           -> Prim__ic_highlight_fun -> VoidPtr
+                           -> PrimIO String
+
+export
+%foreign rlLib "idr_ic_readline_ex_10"
+prim__idr_ic_readline_ex_10 : String
+                           -> Prim__ic_completer_fun -> VoidPtr
+                           -> VoidPtr
+                           -> PrimIO String
+
+export
+%foreign rlLib "idr_ic_readline_ex_11"
+prim__idr_ic_readline_ex_11 : String
+                           -> Prim__ic_completer_fun -> VoidPtr
+                           -> Prim__ic_highlight_fun -> VoidPtr
+                           -> PrimIO String
 
 --------------------------------------------------------------------------------
 
@@ -146,6 +206,14 @@ export
 prim__ic_history_add : String -> PrimIO ()
 
 --------------------------------------------------------------------------------
+
+||| bool ic_add_completion_ex(ic_completion_env_t* cenv,
+|||   const char* completion, const char* display, const char* help)
+export
+%foreign rlLib "ic_add_completion_ex"
+prim__ic_add_completion_ex : Prim__ic_completion_envPtr
+                          -> String -> String -> String
+                          -> PrimIO CBool
 
 ||| void ic_complete_filename(ic_completion_env_t* cenv, const char* prefix,
 |||   char dir_separator, const char* roots, const char* extensions)

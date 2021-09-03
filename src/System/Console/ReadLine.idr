@@ -21,6 +21,10 @@ public export
 CompleterFun : Type
 CompleterFun = CompletionEnv -> String -> IO ()
 
+mkCompleter : CompleterFun -> Prim__ic_completer_fun
+mkCompleter f = \x, str => toPrim $
+  f (MkCompletionEnv x) str
+
 --------------------------------------------------------------------------------
 
 export
@@ -33,13 +37,11 @@ readlineEx : String
           -> Maybe (String -> FmtString)
           -> IO String
 readlineEx prompt completer highlighter = do
-  primIO $ prim__ic_readline_ex prompt
-    (case completer of
-      Just completer => ?todo0
-      Nothing        => believe_me prim__null_ptr)
-    (believe_me prim__null_ptr)
-    ?arg2
-    (believe_me prim__null_ptr)
+  primIO $ case (completer, highlighter) of
+    (Nothing       , Nothing)          => prim__idr_ic_readline_ex_00 prompt                         coeNullPtr                      coeNullPtr
+    (Nothing       , Just highlighter) => prim__idr_ic_readline_ex_01 prompt                         coeNullPtr (?todo0 highlighter) coeNullPtr
+    (Just completer, Nothing)          => prim__idr_ic_readline_ex_10 prompt (mkCompleter completer) coeNullPtr                      coeNullPtr
+    (Just completer, Just highlighter) => prim__idr_ic_readline_ex_11 prompt (mkCompleter completer) coeNullPtr (?todo1 highlighter) coeNullPtr
 
 --------------------------------------------------------------------------------
 
@@ -63,6 +65,13 @@ historyAdd = primIO . prim__ic_history_add
 
 --------------------------------------------------------------------------------
 
+public export
+record Completion where
+  constructor MkCompletion
+  replacement : String
+  display     : String
+  help        : String
+
 export
 completeFileName : CompletionEnv -> String
                 -> Maybe Char -> List String -> List String
@@ -72,3 +81,27 @@ completeFileName (MkCompletionEnv cEnv) input dirSep filePaths exts = primIO $
     (fromMaybe '\NUL' dirSep)
     (concat (intersperse ";" filePaths))
     (concat (intersperse ";" exts))
+
+export
+addCompletion : CompletionEnv -> Completion -> IO Bool
+addCompletion (MkCompletionEnv env) (MkCompletion replacement display help) =
+  (primIO $ prim__ic_add_completion_ex env replacement display help)
+    <&> cast
+
+export
+addCompletions : CompletionEnv -> List Completion -> IO Bool
+addCompletions _ [] = pure True
+addCompletions env (x :: xs) =
+  if !(addCompletion env x)
+    then addCompletions env xs
+    else pure False
+
+export
+completeWordPrim : CompletionEnv -> String
+                -> Maybe (Char -> Bool) -> (CompletionEnv -> String -> IO ())
+                -> IO ()
+
+export
+completeWord : CompletionEnv -> String
+            -> Maybe (Char -> Bool) -> (String -> List Completion)
+            -> IO ()
