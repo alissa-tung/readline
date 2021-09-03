@@ -1,6 +1,6 @@
 default_target: all
 
-LIB_PREFIX        ?= /usr/local/lib
+LIB_PREFIX        ?= ${HOME}/.idris2/lib
 CC                 = clang -O2 -g -Wall
 CLANG_GEN_IDR_LIB  = clang -O2 -g -Wall -shared -fPIC
 
@@ -44,4 +44,5 @@ test: readline
 		./build/exec/runtests idris2 --interactive --failure-file failures)
 
 readline:
+	(sed -i "s|__LIB_PREFIX__|${LIB_PREFIX}|g" ./src/Internal/Path.idr)
 	(idris2 --build readline.ipkg)

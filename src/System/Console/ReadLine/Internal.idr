@@ -1,13 +1,9 @@
 module System.Console.ReadLine.Internal
 
+import        Internal.Path
 import public System.FFI
 
 %default total
-
---------------------------------------------------------------------------------
-
-rlLib : String -> String
-rlLib f = "C:" ++ f ++ ", /usr/local/lib/libisoclineidr.so"
 
 --------------------------------------------------------------------------------
 

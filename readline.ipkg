@@ -7,3 +7,5 @@ sourceloc = "https://github.com/withoutK/isocline.git"
 modules =
     System.Console.ReadLine
   , System.Console.ReadLine.Internal
+
+  , Internal.Path

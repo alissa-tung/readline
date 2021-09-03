@@ -6,3 +6,4 @@ libisoclineidr.so
 rltest/failures
 rltest/**/build
 rltest/**/output*
+src/Internal/Path.idr
