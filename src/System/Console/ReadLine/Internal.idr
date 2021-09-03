@@ -1,13 +1,9 @@
 module System.Console.ReadLine.Internal
 
-import System.FFI
+import        Internal.Path
+import public System.FFI
 
 %default total
-
---------------------------------------------------------------------------------
-
-rlLib : String -> String
-rlLib f = "C:" ++ f ++ ", /usr/local/lib/libisocline.so"
 
 --------------------------------------------------------------------------------
 
@@ -16,6 +12,10 @@ VoidPtr = AnyPtr
 
 CBool : Type
 CBool = Bits32
+
+export
+%foreign rlLib "null_ptr"
+prim__null_ptr : AnyPtr
 
 ||| bool is_null_ptr(void *p)
 %foreign rlLib "is_null_ptr"
@@ -34,6 +34,15 @@ prim__string_to_ptr_string : String -> PrimIO (Ptr String)
 Prim__ic_envPtr : Type
 Prim__ic_envPtr = AnyPtr
 
+Prim__attrbufPtr : Type
+Prim__attrbufPtr = AnyPtr
+
+Prim__bbcodePtr : Type
+Prim__bbcodePtr = AnyPtr
+
+Prim__allocPtr : Type
+Prim__allocPtr = AnyPtr
+
 ||| typedef bool (ic_completion_fun_t)
 |||   (ic_env_t* env, void* funenv, const char* replacement, const char* display, const char* help, long delete_before, long delete_after)
 Prim__ic_completion_fun : Type
@@ -50,6 +59,7 @@ Prim__ic_completion_fun = Prim__ic_envPtr -> VoidPtr
 |||   void*                closure
 |||   ic_completion_fun_t* complete
 ||| typedef struct ic_completion_env_s ic_completion_env_t
+public export
 Prim__ic_completion_envPtr : Type
 Prim__ic_completion_envPtr = Struct "ic_completion_env_t"
   [ ("env"     , Prim__ic_envPtr)
@@ -67,12 +77,51 @@ prim__mk_ic_completion_env : PrimIO Prim__ic_completion_envPtr
 %foreign rlLib "rm_ic_completion_env"
 prim__rm_ic_completion_env : Prim__ic_completion_envPtr -> PrimIO ()
 
+||| struct ic_highlight_env_s
+|||   attrbuf_t*    attrs
+|||   const char*   input
+|||   ssize_t       input_len
+|||   bbcode_t*     bbcode
+|||   alloc_t*      mem
+|||   ssize_t       cached_upos
+|||   ssize_t       cached_cpos
+||| typedef struct ic_highlight_env_s ic_highlight_env_t
+Prim__ic_highlight_envPtr : Type
+Prim__ic_highlight_envPtr = Struct "ic_highlight_env_t"
+  [ ("attrs"      , Prim__attrbufPtr)
+  , ("input"      , Ptr String)
+  , ("input_len"  , Bits32)
+  , ("bbcode"     , Prim__bbcodePtr)
+  , ("mem"        , Prim__allocPtr)
+  , ("cached_upos", Bits32)
+  , ("cached_cpos", Bits32) ]
+
+||| typedef void (ic_completer_fun_t)
+|||   (ic_completion_env_t* cenv, const char* prefix)
+Prim__ic_completer_fun : Type
+Prim__ic_completer_fun = Prim__ic_completion_envPtr -> String -> PrimIO ()
+
+||| typedef void (ic_highlight_fun_t)
+|||   (ic_highlight_env_t* henv, const char* input, void* arg)
+Prim__ic_highlight_fun : Type
+Prim__ic_highlight_fun = Prim__ic_highlight_envPtr -> String -> VoidPtr -> PrimIO ()
+
 --------------------------------------------------------------------------------
 
 ||| char* ic_readline(const char* prompt_text)
 export
 %foreign rlLib "ic_readline"
 prim__ic_readline : String -> PrimIO String
+
+||| char* ic_readline_ex(const char* prompt_text,
+|||   ic_completer_fun_t* completer, void* completer_arg,
+|||   ic_highlight_fun_t* highlighter, void* highlighter_arg)
+export
+%foreign rlLib "ic_readline_ex"
+prim__ic_readline_ex : String
+                    -> Ptr Prim__ic_completer_fun -> VoidPtr
+                    -> Ptr Prim__ic_highlight_fun -> VoidPtr
+                    -> PrimIO String
 
 --------------------------------------------------------------------------------
 
@@ -95,3 +144,13 @@ prim__ic_history_clear : PrimIO ()
 export
 %foreign rlLib "ic_history_add"
 prim__ic_history_add : String -> PrimIO ()
+
+--------------------------------------------------------------------------------
+
+||| void ic_complete_filename(ic_completion_env_t* cenv, const char* prefix,
+|||   char dir_separator, const char* roots, const char* extensions)
+export
+%foreign rlLib "ic_complete_filename"
+prim__ic_complete_filename : Prim__ic_completion_envPtr -> String
+                          -> Char -> String -> String
+                          -> PrimIO ()

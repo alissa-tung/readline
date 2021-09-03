@@ -2,7 +2,7 @@ module Main
 
 import Test.Golden
 
-%default total
+%default covering
 
 main : IO ()
 main = runner

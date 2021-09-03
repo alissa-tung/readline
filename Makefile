@@ -1,6 +1,6 @@
 default_target: all
 
-LIB_PREFIX        ?= /usr/local/lib
+LIB_PREFIX        ?= ${HOME}/.idris2/lib
 CC                 = clang -O2 -g -Wall
 CLANG_GEN_IDR_LIB  = clang -O2 -g -Wall -shared -fPIC
 
@@ -8,8 +8,8 @@ all: init fmt isocline readline doc test install
 
 install: readline
 	(idris2 --install readline.ipkg)
-	(rm -rf ${LIB_PREFIX}/libisocline.so)
-	(cp ./libisocline.so ${LIB_PREFIX}/)
+	(rm -rf ${LIB_PREFIX}/libisoclineidr.so)
+	(cp ./libisoclineidr.so ${LIB_PREFIX}/)
 
 clean:
 	(idris2 --clean readline.ipkg)
@@ -18,7 +18,7 @@ clean:
 	(cd ./depends/isocline || exit && \
 		make clean                   && \
 		rm -rf CMakeCache.txt CMakeFiles Makefile cmake_install.cmake a.out)
-	(rm -rf build libisocline.so)
+	(rm -rf build libisoclineidr.so)
 
 init:
 	(cd ./depends/isocline && \
@@ -35,7 +35,7 @@ isocline:
 		cmake CMakeLists.txt            && \
 		make all                        && \
 		$(CLANG_GEN_IDR_LIB) ./src/idris.c \
-			-o ../../libisocline.so)
+			-o ../../libisoclineidr.so)
 
 test: readline
 	(cd ./rltest || exit && \
@@ -44,4 +44,5 @@ test: readline
 		./build/exec/runtests idris2 --interactive --failure-file failures)
 
 readline:
+	(sed -i "s|__LIB_PREFIX__|${LIB_PREFIX}|g" ./src/Internal/Path.idr)
 	(idris2 --build readline.ipkg)

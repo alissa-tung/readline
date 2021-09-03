@@ -7,4 +7,3 @@ executable = runtests
 depends =
     contrib
   , test
-  , readline
