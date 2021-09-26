@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>System.Console.ReadLine</title>
+  <link rel="stylesheet" type="text/css" id="preferredStyle" href="../default.css">
+  <script>
+    /* Updates the stylesheet to use the preferred one.
+       Note that we set the link to root ++ sourceLoc because the config
+       is shared across the whole website, so the root may differ from
+       page to page.
+    */
+    function setStyleSource (sourceLoc) {
+      document.getElementById("preferredStyle").href = "../" + sourceLoc + ".css";
+      document.getElementById("selectPreferredStyle").value = sourceLoc;
+    }
+    /* Initialises the preferred style sheet:
+       1. if there is a stored value then use that
+          otherwise select the default
+       2. set both the css link href & the drop down menu selected option
+    */
+    function initStyleSource () {
+      var preferredStyle = localStorage.getItem("stylefile");
+      if (preferredStyle !== null) {
+        setStyleSource(preferredStyle);
+      } else {
+        setStyleSource("default");
+      };
+    }
+    function saveStyleSource (preferredStyle) {
+      localStorage.stylefile = preferredStyle;
+    }
+    </script>
+</head>
+<body class="namespace">
+<header>
+  <strong>Idris2Doc</strong> : System.Console.ReadLine
+  <nav><a href="../index.html">Index</a>
+  <select id="selectPreferredStyle">
+    <option value="default">Default</option>
+<option value="alternative">Alternative</option>
+<option value="blackandwhite">Black & White</option>
+
+  </select>
+  </nav>
+  <script>
+  /* We start by initialising the style source */
+  initStyleSource();
+  /* This listens for changes on the drop down menu and updates the
+     css used for the current page when a selection is made.
+  */
+  document.getElementById("selectPreferredStyle").addEventListener("change", function(){
+    var selected = this.options[this.selectedIndex].value; /* the option chosen */
+    setStyleSource (selected);
+    saveStyleSource (selected);
+  });
+</script>
+</header>
+<div class="container"><div id="moduleHeader"><h1>System.Console.ReadLine</h1><pre></pre></div><dl class="decls"><dt id="System.Console.ReadLine.CompleterFun"><a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.CompleterFun"><span class="name function">CompleterFun</span></a>&ensp;:&ensp;<span class="name type">Type</span></dt><dd>  <b>Totality</b>:&ensp;total</dd><dt id="System.Console.ReadLine.CompletionEnv"><!-- ann ignored START -->record<!-- ann END -->&ensp;<a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.CompletionEnv"><span class="name type">CompletionEnv</span></a>&ensp;:&ensp;<span class="name type">Type</span></dt><dd>  <b>Totality</b>:&ensp;total<br>  <b>Constructor</b>:&ensp;<dl class="decls"><dt id="System.Console.ReadLine.MkCompletionEnv"><a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.MkCompletionEnv"><span class="name constructor">MkCompletionEnv</span></a>&ensp;:&ensp;<a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.Prim__ic_completion_envPtr"><span class="name function">Prim__ic_completion_envPtr</span></a>&ensp;-&gt;&ensp;<a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.CompletionEnv"><span class="name type">CompletionEnv</span></a></dt></dl><br>  <b>Projection</b>:&ensp;<dl class="decls"><dt id="System.Console.ReadLine.CompletionEnv.(.unCompletionEnv)"><span class="type resolved" title="System.Console.ReadLine.CompletionEnv.(.unCompletionEnv)"><span class="name function">.unCompletionEnv</span></span>&ensp;:&ensp;<a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.CompletionEnv"><span class="name type">CompletionEnv</span></a>&ensp;-&gt;&ensp;<a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.Prim__ic_completion_envPtr"><span class="name function">Prim__ic_completion_envPtr</span></a></dt></dl></dd><dt id="System.Console.ReadLine.FmtString"><a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.FmtString"><span class="name function">FmtString</span></a>&ensp;:&ensp;<span class="name type">Type</span></dt><dd>  <b>Totality</b>:&ensp;total</dd><dt id="System.Console.ReadLine.completeFileName"><a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.completeFileName"><span class="name function">completeFileName</span></a>&ensp;:&ensp;<a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.CompletionEnv"><span class="name type">CompletionEnv</span></a>&ensp;-&gt;&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="Prelude.Types.Maybe"><span class="name type">Maybe</span></span>&ensp;<span class="name type">Char</span>&ensp;-&gt;&ensp;<span class="type resolved" title="Prelude.Basics.List"><span class="name type">List</span></span>&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="Prelude.Basics.List"><span class="name type">List</span></span>&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.IO"><span class="name type">IO</span></span>&ensp;()</dt><dd>  <b>Totality</b>:&ensp;total</dd><dt id="System.Console.ReadLine.historyAdd"><a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.historyAdd"><span class="name function">historyAdd</span></a>&ensp;:&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.IO"><span class="name type">IO</span></span>&ensp;()</dt><dd>  <b>Totality</b>:&ensp;total</dd><dt id="System.Console.ReadLine.historyClear"><a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.historyClear"><span class="name function">historyClear</span></a>&ensp;:&ensp;<span class="type resolved" title="PrimIO.IO"><span class="name type">IO</span></span>&ensp;()</dt><dd>  <b>Totality</b>:&ensp;total</dd><dt id="System.Console.ReadLine.historyRemoveLast"><a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.historyRemoveLast"><span class="name function">historyRemoveLast</span></a>&ensp;:&ensp;<span class="type resolved" title="PrimIO.IO"><span class="name type">IO</span></span>&ensp;()</dt><dd>  <b>Totality</b>:&ensp;total</dd><dt id="System.Console.ReadLine.readline"><a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.readline"><span class="name function">readline</span></a>&ensp;:&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.IO"><span class="name type">IO</span></span>&ensp;<span class="name type">String</span></dt><dd>  <b>Totality</b>:&ensp;total</dd><dt id="System.Console.ReadLine.readlineEx"><a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.readlineEx"><span class="name function">readlineEx</span></a>&ensp;:&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="Prelude.Types.Maybe"><span class="name type">Maybe</span></span>&ensp;(<a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.CompletionEnv"><span class="name type">CompletionEnv</span></a>&ensp;-&gt;&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.IO"><span class="name type">IO</span></span>&ensp;())&ensp;-&gt;&ensp;<span class="type resolved" title="Prelude.Types.Maybe"><span class="name type">Maybe</span></span>&ensp;(<span class="name type">String</span>&ensp;-&gt;&ensp;<a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.FmtString"><span class="name function">FmtString</span></a>)&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.IO"><span class="name type">IO</span></span>&ensp;<span class="name type">String</span></dt><dd>  <b>Totality</b>:&ensp;total</dd><dt id="System.Console.ReadLine.setHistory"><a class="type" href="System.Console.ReadLine.html#System.Console.ReadLine.setHistory"><span class="name function">setHistory</span></a>&ensp;:&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="Prelude.Types.Maybe"><span class="name type">Maybe</span></span>&ensp;<span class="name type">Int</span>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.IO"><span class="name type">IO</span></span>&ensp;()</dt><dd>  <b>Totality</b>:&ensp;total</dd></dl></div><footer>Produced by Idris 2 version 0.5.1-a9ccf4db4</footer></body></html>

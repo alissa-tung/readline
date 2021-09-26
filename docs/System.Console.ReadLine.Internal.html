@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>System.Console.ReadLine.Internal</title>
+  <link rel="stylesheet" type="text/css" id="preferredStyle" href="../default.css">
+  <script>
+    /* Updates the stylesheet to use the preferred one.
+       Note that we set the link to root ++ sourceLoc because the config
+       is shared across the whole website, so the root may differ from
+       page to page.
+    */
+    function setStyleSource (sourceLoc) {
+      document.getElementById("preferredStyle").href = "../" + sourceLoc + ".css";
+      document.getElementById("selectPreferredStyle").value = sourceLoc;
+    }
+    /* Initialises the preferred style sheet:
+       1. if there is a stored value then use that
+          otherwise select the default
+       2. set both the css link href & the drop down menu selected option
+    */
+    function initStyleSource () {
+      var preferredStyle = localStorage.getItem("stylefile");
+      if (preferredStyle !== null) {
+        setStyleSource(preferredStyle);
+      } else {
+        setStyleSource("default");
+      };
+    }
+    function saveStyleSource (preferredStyle) {
+      localStorage.stylefile = preferredStyle;
+    }
+    </script>
+</head>
+<body class="namespace">
+<header>
+  <strong>Idris2Doc</strong> : System.Console.ReadLine.Internal
+  <nav><a href="../index.html">Index</a>
+  <select id="selectPreferredStyle">
+    <option value="default">Default</option>
+<option value="alternative">Alternative</option>
+<option value="blackandwhite">Black & White</option>
+
+  </select>
+  </nav>
+  <script>
+  /* We start by initialising the style source */
+  initStyleSource();
+  /* This listens for changes on the drop down menu and updates the
+     css used for the current page when a selection is made.
+  */
+  document.getElementById("selectPreferredStyle").addEventListener("change", function(){
+    var selected = this.options[this.selectedIndex].value; /* the option chosen */
+    setStyleSource (selected);
+    saveStyleSource (selected);
+  });
+</script>
+</header>
+<div class="container"><div id="moduleHeader"><h1>System.Console.ReadLine.Internal</h1><pre></pre></div><dl class="decls"><dt id="System.Console.ReadLine.Internal.Prim__ic_completion_envPtr"><a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.Prim__ic_completion_envPtr"><span class="name function">Prim__ic_completion_envPtr</span></a>&ensp;:&ensp;<span class="name type">Type</span></dt><dd><pre>  struct&ensp;ic_completion_env_s<br>  ic_env_t*&ensp;env<br>  const&ensp;char*&ensp;input<br>  long&ensp;cursor<br>  void*&ensp;arg<br>  void*&ensp;closure<br>  ic_completion_fun_t*&ensp;complete<br>  typedef&ensp;struct&ensp;ic_completion_env_s&ensp;ic_completion_env_t</pre><br>  <b>Totality</b>:&ensp;total</dd><dt id="System.Console.ReadLine.Internal.prim__ic_complete_filename"><a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.prim__ic_complete_filename"><span class="name function">prim__ic_complete_filename</span></a>&ensp;:&ensp;<a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.Prim__ic_completion_envPtr"><span class="name function">Prim__ic_completion_envPtr</span></a>&ensp;-&gt;&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="name type">Char</span>&ensp;-&gt;&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.PrimIO"><span class="name function">PrimIO</span></span>&ensp;()</dt><dd><pre>  void&ensp;ic_complete_filename(ic_completion_env_t*&ensp;cenv,&ensp;const&ensp;char*&ensp;prefix,<br>  char&ensp;dir_separator,&ensp;const&ensp;char*&ensp;roots,&ensp;const&ensp;char*&ensp;extensions)</pre></dd><dt id="System.Console.ReadLine.Internal.prim__ic_history_add"><a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.prim__ic_history_add"><span class="name function">prim__ic_history_add</span></a>&ensp;:&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.PrimIO"><span class="name function">PrimIO</span></span>&ensp;()</dt><dd><pre>  void&ensp;ic_history_add(const&ensp;char*&ensp;entry)</pre></dd><dt id="System.Console.ReadLine.Internal.prim__ic_history_clear"><a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.prim__ic_history_clear"><span class="name function">prim__ic_history_clear</span></a>&ensp;:&ensp;<span class="type resolved" title="PrimIO.PrimIO"><span class="name function">PrimIO</span></span>&ensp;()</dt><dd><pre>  void&ensp;ic_history_clear()</pre></dd><dt id="System.Console.ReadLine.Internal.prim__ic_history_remove_last"><a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.prim__ic_history_remove_last"><span class="name function">prim__ic_history_remove_last</span></a>&ensp;:&ensp;<span class="type resolved" title="PrimIO.PrimIO"><span class="name function">PrimIO</span></span>&ensp;()</dt><dd><pre>  void&ensp;ic_history_remove_last()</pre></dd><dt id="System.Console.ReadLine.Internal.prim__ic_readline"><a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.prim__ic_readline"><span class="name function">prim__ic_readline</span></a>&ensp;:&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.PrimIO"><span class="name function">PrimIO</span></span>&ensp;<span class="name type">String</span></dt><dd><pre>  char*&ensp;ic_readline(const&ensp;char*&ensp;prompt_text)</pre></dd><dt id="System.Console.ReadLine.Internal.prim__ic_readline_ex"><a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.prim__ic_readline_ex"><span class="name function">prim__ic_readline_ex</span></a>&ensp;:&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.Ptr"><span class="name type">Ptr</span></span>&ensp;<a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.Prim__ic_completer_fun"><span class="name function">Prim__ic_completer_fun</span></a>&ensp;-&gt;&ensp;<a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.VoidPtr"><span class="name function">VoidPtr</span></a>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.Ptr"><span class="name type">Ptr</span></span>&ensp;<a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.Prim__ic_highlight_fun"><span class="name function">Prim__ic_highlight_fun</span></a>&ensp;-&gt;&ensp;<a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.VoidPtr"><span class="name function">VoidPtr</span></a>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.PrimIO"><span class="name function">PrimIO</span></span>&ensp;<span class="name type">String</span></dt><dd><pre>  char*&ensp;ic_readline_ex(const&ensp;char*&ensp;prompt_text,<br>  ic_completer_fun_t*&ensp;completer,&ensp;void*&ensp;completer_arg,<br>  ic_highlight_fun_t*&ensp;highlighter,&ensp;void*&ensp;highlighter_arg)</pre></dd><dt id="System.Console.ReadLine.Internal.prim__ic_set_history"><a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.prim__ic_set_history"><span class="name function">prim__ic_set_history</span></a>&ensp;:&ensp;<span class="name type">String</span>&ensp;-&gt;&ensp;<span class="name type">Bits32</span>&ensp;-&gt;&ensp;<span class="type resolved" title="PrimIO.PrimIO"><span class="name function">PrimIO</span></span>&ensp;()</dt><dd><pre>  void&ensp;ic_set_history(const&ensp;char*&ensp;fname,&ensp;long&ensp;max_entries)</pre></dd><dt id="System.Console.ReadLine.Internal.prim__null_ptr"><a class="type" href="System.Console.ReadLine.Internal.html#System.Console.ReadLine.Internal.prim__null_ptr"><span class="name function">prim__null_ptr</span></a>&ensp;:&ensp;<span class="type resolved" title="PrimIO.AnyPtr"><span class="name type">AnyPtr</span></span></dt></dl></div><footer>Produced by Idris 2 version 0.5.1-a9ccf4db4</footer></body></html>
